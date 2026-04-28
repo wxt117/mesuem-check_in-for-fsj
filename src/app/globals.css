@@ -681,6 +681,27 @@ h3 {
   align-items: center;
 }
 
+.object-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.object-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--muted);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.object-emoji {
+  flex: 0 0 auto;
+}
+
 .bar-track {
   height: 12px;
   overflow: hidden;

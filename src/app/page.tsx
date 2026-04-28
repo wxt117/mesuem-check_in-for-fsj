@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { QrCode, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getVisitorSession } from "@/lib/session";
 import { ExhibitCard } from "@/components/ExhibitCard";
@@ -47,10 +47,6 @@ export default async function HomePage() {
           <Link className="primary-button" href="/summary">
             <Sparkles size={18} />
             Summary
-          </Link>
-          <Link className="secondary-button" href="/admin/exhibits">
-            <QrCode size={18} />
-            Admin
           </Link>
         </div>
       </div>

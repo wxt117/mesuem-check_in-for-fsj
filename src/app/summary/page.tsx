@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getVisitorSession } from "@/lib/session";
-import { buildLocalSummary, sourceHashForCheckins } from "@/lib/summary";
-import { generateSummary } from "@/app/summary/actions";
+import { buildAiSummary, sourceHashForCheckins, type CheckinWithExhibit } from "@/lib/summary";
 
 export const maxDuration = 30;
 
@@ -36,24 +35,50 @@ function moodRows(checkins: { emoji: string }[]) {
     ));
 }
 
-type SummaryPageProps = {
-  searchParams: Promise<{
-    generated?: string;
-    error?: string;
-  }>;
-};
+async function getCurrentSummary(sessionId: string, checkins: CheckinWithExhibit[]) {
+  const currentHash = sourceHashForCheckins(checkins);
+  const savedSummary = await prisma.summary.findFirst({
+    where: {
+      sessionId,
+      sourceHash: currentHash
+    },
+    orderBy: { createdAt: "desc" }
+  });
 
-function summaryStatus(generated?: string, error?: string) {
-  if (generated) return "Summary generated.";
-  if (error === "ai") return "Could not generate with AI. Check your API key and model settings.";
-  if (error === "empty") return "Save at least one check-in first.";
-  if (error === "session") return "No visitor session found on this device.";
-  if (error) return "Could not generate a summary yet.";
-  return "";
+  if (savedSummary) {
+    return {
+      summary: savedSummary,
+      error: ""
+    };
+  }
+
+  try {
+    const result = await buildAiSummary(checkins);
+    const summary = await prisma.summary.create({
+      data: {
+        sessionId,
+        content: result.content,
+        keywordsJson: JSON.stringify(result.keywords),
+        mood: result.mood,
+        model: result.model,
+        sourceHash: result.sourceHash
+      }
+    });
+
+    return {
+      summary,
+      error: ""
+    };
+  } catch (error) {
+    console.error("Summary generation failed", error);
+    return {
+      summary: null,
+      error: "Could not generate an AI summary. Check your API key and model settings."
+    };
+  }
 }
 
-export default async function SummaryPage({ searchParams }: SummaryPageProps) {
-  const query = await searchParams;
+export default async function SummaryPage() {
   const session = await getVisitorSession();
   const checkins = session
     ? await prisma.checkin.findMany({
@@ -87,16 +112,10 @@ export default async function SummaryPage({ searchParams }: SummaryPageProps) {
     );
   }
 
-  const currentHash = sourceHashForCheckins(checkins);
-  const savedSummary = await prisma.summary.findFirst({
-    where: { sessionId: session.id },
-    orderBy: { createdAt: "desc" }
-  });
-  const localSummary = buildLocalSummary(checkins);
-  const content = savedSummary?.content ?? localSummary.content;
-  const keywords = savedSummary ? parseKeywords(savedSummary.keywordsJson) : localSummary.keywords;
-  const mood = savedSummary?.mood ?? localSummary.mood;
-  const model = savedSummary?.model ?? localSummary.model;
+  const { summary: savedSummary, error: generationError } = await getCurrentSummary(session.id, checkins);
+  const content = savedSummary?.content ?? generationError;
+  const keywords = savedSummary ? parseKeywords(savedSummary.keywordsJson) : [];
+  const mood = savedSummary?.mood ?? "AI summary unavailable";
   const summaryTime = savedSummary
     ? new Intl.DateTimeFormat("en-GB", {
         hour: "2-digit",
@@ -126,29 +145,24 @@ export default async function SummaryPage({ searchParams }: SummaryPageProps) {
           <ul className="insight-list">
             <li>Mood: {mood}</li>
             <li>Keywords: {keywords.length ? keywords.join(", ") : "not enough data yet"}</li>
-            <li>Source: {model === "local-fallback" ? "local fallback" : model}</li>
             {summaryTime ? <li>Generated at: {summaryTime}</li> : null}
           </ul>
         </article>
         <aside className="side-panel">
-          <div className="mini-card">
-            <h2>Generate</h2>
-            <p>Generate a fresh summary from this visitor session. DeepSeek is used when configured.</p>
-            <form action={generateSummary}>
-              <button className="primary-button" type="submit">
-                <Sparkles size={18} />
-                Generate AI summary
-              </button>
-            </form>
-            <p className="status-message">{summaryStatus(query.generated, query.error)}</p>
-          </div>
           <div className="mini-card">
             <h2>Mood trail</h2>
             <div className="mood-bars">{moodRows(checkins)}</div>
           </div>
           <div className="mini-card">
             <h2>Objects</h2>
-            <p>{checkins.map((item) => `${item.emoji} ${item.exhibit.title}`).join(", ")}</p>
+            <ul className="object-list">
+              {checkins.map((item) => (
+                <li key={item.id}>
+                  <span className="object-emoji">{item.emoji}</span>
+                  <span>{item.exhibit.title}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </aside>
       </section>

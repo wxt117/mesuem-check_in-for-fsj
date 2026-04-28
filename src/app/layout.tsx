@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
-import { Home, QrCode, Sparkles } from "lucide-react";
+import { Home, Sparkles } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -35,9 +35,6 @@ export default function RootLayout({
               </Link>
               <Link className="icon-link" href="/summary" title="Summary" aria-label="Summary">
                 <Sparkles size={19} />
-              </Link>
-              <Link className="icon-link" href="/admin/exhibits" title="Admin QR tools" aria-label="Admin QR tools">
-                <QrCode size={19} />
               </Link>
             </nav>
           </header>
