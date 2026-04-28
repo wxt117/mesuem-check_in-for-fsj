@@ -24,6 +24,11 @@ const moodCopy: Record<string, string> = {
   "\u{1f635}": "confused and overwhelmed"
 };
 
+function envValue(name: string) {
+  const value = process.env[name]?.trim();
+  return value || undefined;
+}
+
 export function sourceHashForCheckins(checkins: CheckinWithExhibit[]) {
   const payload = checkins
     .map((item) => `${item.exhibitId}:${item.emoji}:${item.comment ?? ""}:${item.updatedAt.toISOString()}`)
@@ -121,10 +126,10 @@ function parseSummaryJson(text: string, fallback: SummaryResult, model: string):
 
 async function buildDeepSeekSummary(checkins: CheckinWithExhibit[], fallback: SummaryResult): Promise<SummaryResult> {
   const OpenAI = (await import("openai")).default;
-  const model = process.env.DEEPSEEK_MODEL || "deepseek-v4-flash";
+  const model = envValue("DEEPSEEK_MODEL") || "deepseek-v4-flash";
   const client = new OpenAI({
-    apiKey: process.env.DEEPSEEK_API_KEY,
-    baseURL: process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com"
+    apiKey: envValue("DEEPSEEK_API_KEY"),
+    baseURL: envValue("DEEPSEEK_BASE_URL") || "https://api.deepseek.com"
   });
 
   const response = await client.chat.completions.create({
@@ -149,8 +154,8 @@ async function buildDeepSeekSummary(checkins: CheckinWithExhibit[], fallback: Su
 
 async function buildOpenAiSummary(checkins: CheckinWithExhibit[], fallback: SummaryResult): Promise<SummaryResult> {
   const OpenAI = (await import("openai")).default;
-  const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const model = process.env.OPENAI_MODEL || "gpt-4.1-mini";
+  const client = new OpenAI({ apiKey: envValue("OPENAI_API_KEY") });
+  const model = envValue("OPENAI_MODEL") || "gpt-4.1-mini";
 
   const response = await client.responses.create({
     model,
@@ -173,11 +178,11 @@ async function buildOpenAiSummary(checkins: CheckinWithExhibit[], fallback: Summ
 export async function buildAiSummary(checkins: CheckinWithExhibit[]): Promise<SummaryResult> {
   const fallback = buildLocalSummary(checkins);
 
-  if (process.env.DEEPSEEK_API_KEY) {
+  if (envValue("DEEPSEEK_API_KEY")) {
     return buildDeepSeekSummary(checkins, fallback);
   }
 
-  if (process.env.OPENAI_API_KEY) {
+  if (envValue("OPENAI_API_KEY")) {
     return buildOpenAiSummary(checkins, fallback);
   }
 
