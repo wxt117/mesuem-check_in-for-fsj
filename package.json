@@ -1,0 +1,42 @@
+{
+  "name": "museum-checkin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "vercel-build": "prisma generate --schema prisma-postgres/schema.prisma && prisma migrate deploy --schema prisma-postgres/schema.prisma && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset",
+    "postgres:generate": "prisma generate --schema prisma-postgres/schema.prisma",
+    "postgres:migrate": "prisma migrate dev --schema prisma-postgres/schema.prisma",
+    "postgres:deploy": "prisma migrate deploy --schema prisma-postgres/schema.prisma",
+    "postgres:seed": "prisma generate --schema prisma-postgres/schema.prisma && prisma db seed --schema prisma-postgres/schema.prisma && prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "lucide-react": "^1.11.0",
+    "next": "^16.2.4",
+    "openai": "^6.34.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.4",
+    "prisma": "^6.19.3",
+    "typescript": "^6.0.3"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "Museum Check-in",
+  "short_name": "Check-in",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fbf8f1",
+  "theme_color": "#157a7e",
+  "description": "Scan museum QR codes, save exhibit reactions, and generate a personal visit summary."
+}

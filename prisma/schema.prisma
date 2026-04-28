@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Exhibit {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  title        String
+  artist       String?
+  gallery      String
+  period       String?
+  description  String
+  imageUrl     String?
+  symbol       String    @default("Art")
+  colorA       String    @default("#157a7e")
+  colorB       String    @default("#c99635")
+  displayOrder Int       @default(0)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  checkins     Checkin[]
+  qrCodes      QRCode[]
+}
+
+model VisitorSession {
+  id          String    @id @default(cuid())
+  anonymousId String    @unique
+  createdAt   DateTime  @default(now())
+  lastSeenAt  DateTime  @updatedAt
+  checkins    Checkin[]
+  summaries   Summary[]
+}
+
+model Checkin {
+  id        String         @id @default(cuid())
+  sessionId String
+  exhibitId String
+  emoji     String
+  comment   String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  session   VisitorSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  exhibit   Exhibit        @relation(fields: [exhibitId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, exhibitId])
+  @@index([exhibitId])
+}
+
+model Summary {
+  id           String         @id @default(cuid())
+  sessionId    String
+  content      String
+  keywordsJson String         @default("[]")
+  mood         String?
+  model        String
+  sourceHash   String
+  createdAt    DateTime       @default(now())
+  session      VisitorSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
+
+model QRCode {
+  id        String   @id @default(cuid())
+  exhibitId String
+  url       String
+  format    String   @default("svg")
+  label     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  exhibit   Exhibit  @relation(fields: [exhibitId], references: [id], onDelete: Cascade)
+
+  @@index([exhibitId])
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      String   @default("staff")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
