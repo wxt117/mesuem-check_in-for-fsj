@@ -12,7 +12,7 @@ type SummaryShareButtonProps = {
   content: string;
   mood: string;
   keywords: string[];
-  objects: ShareObject[];
+  objects?: ShareObject[];
 };
 
 function wrapLines(
@@ -145,33 +145,6 @@ async function createShareImage({ content, mood, keywords, objects }: SummarySha
   context.font = '28px "Times New Roman", Times, serif';
   context.fillStyle = "#62646f";
   drawWrappedText(context, keywords.slice(0, 5).join(", ") || "personal response", 560, y + 104, 360, 36, 2);
-
-  y += 250;
-  context.font = '700 34px "Times New Roman", Times, serif';
-  context.fillStyle = "#17181c";
-  context.fillText("The emoji archive", 80, y);
-
-  context.font = '30px "Apple Color Emoji", "Segoe UI Emoji", sans-serif';
-  const trail = objects
-    .slice(0, 8)
-    .map((item) => item.emoji)
-    .join("  ");
-  context.fillText(trail, 80, y + 60);
-
-  context.font = '24px "Times New Roman", Times, serif';
-  context.fillStyle = "#62646f";
-  drawWrappedText(
-    context,
-    objects
-      .slice(0, 4)
-      .map((item) => item.title)
-      .join(" / "),
-    80,
-    y + 112,
-    920,
-    32,
-    3
-  );
 
   return canvasToBlob(canvas);
 }
