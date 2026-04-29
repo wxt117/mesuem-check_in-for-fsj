@@ -702,6 +702,15 @@ h3 {
   flex: 0 0 auto;
 }
 
+.share-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.share-actions .status-message {
+  margin-top: 0;
+}
+
 .bar-track {
   height: 12px;
   overflow: hidden;

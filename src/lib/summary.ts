@@ -13,6 +13,8 @@ export type SummaryResult = {
   sourceHash: string;
 };
 
+const SUMMARY_PROMPT_VERSION = "emotional-journey-v2";
+
 const moodCopy: Record<string, string> = {
   "\u{1f604}": "happy and open",
   "\u{1f622}": "sad and touched",
@@ -30,8 +32,8 @@ function envValue(name: string) {
 }
 
 export function sourceHashForCheckins(checkins: CheckinWithExhibit[]) {
-  const payload = checkins
-    .map((item) => `${item.exhibitId}:${item.emoji}:${item.comment ?? ""}:${item.updatedAt.toISOString()}`)
+  const payload = [SUMMARY_PROMPT_VERSION]
+    .concat(checkins.map((item) => `${item.exhibitId}:${item.emoji}:${item.comment ?? ""}:${item.updatedAt.toISOString()}`))
     .join("|");
 
   return createHash("sha256").update(payload).digest("hex");
@@ -69,12 +71,12 @@ export function buildLocalSummary(checkins: CheckinWithExhibit[]): SummaryResult
   ].slice(0, 6);
 
   const content = [
-    `You checked in with ${checkins.length} painting${checkins.length > 1 ? "s" : ""}, especially around ${rooms.join(", ")}.`,
-    `Your strongest repeated signal was ${favoriteEmoji}, suggesting a ${moodCopy[favoriteEmoji] ?? "distinct"} viewing mood.`,
-    `The works that shaped this visit include ${titles.slice(0, 3).join(", ")}.`,
+    `Your path through ${rooms.join(", ")} leans toward a ${moodCopy[favoriteEmoji] ?? "mixed"} way of looking.`,
+    `${favoriteEmoji} appears as the strongest signal, turning the archive into a record of attention rather than a checklist.`,
+    `The works holding the centre of this journey include ${titles.slice(0, 3).join(", ")}.`,
     longestComment
-      ? `One note captures the visit especially well: "${longestComment}".`
-      : "You used quick Emoji reactions more than written notes, so the summary is intentionally concise."
+      ? `Your note "${longestComment}" gives the feeling a sharper edge.`
+      : "Next time, notice whether your first emoji changes after you spend a little longer with the painting."
   ].join(" ");
 
   return {
@@ -140,7 +142,7 @@ async function buildDeepSeekSummary(checkins: CheckinWithExhibit[], fallback: Su
       {
         role: "system",
         content:
-          'You are a museum visit reflection assistant. Summarise only the provided painting check-ins. Do not invent facts. Return JSON with this shape: {"content":"120-160 word visitor-facing report that mentions their mood pattern, painting interests, and 2-3 specific works","keywords":["keyword"],"mood":"short mood phrase"}.'
+          'You write "Your Emotional Museum Journey" for a visitor to a UK museum. Use only the provided painting responses. Do not invent facts. Avoid generic recap phrases such as "you checked in", "this visit includes", or "the works that shaped this visit". Interpret the emotional pattern: what the emojis and notes suggest about how the visitor looked, what they were drawn toward, and where there is tension or surprise. Mention 2-3 specific works. Write in warm second person, 100-130 words, with one guiding final sentence that helps the visitor keep looking. Return JSON with this shape: {"content":"visitor-facing report","keywords":["keyword"],"mood":"short mood phrase"}.'
       },
       {
         role: "user",
@@ -163,7 +165,7 @@ async function buildOpenAiSummary(checkins: CheckinWithExhibit[], fallback: Summ
       {
         role: "system",
         content:
-          "You are a museum visit reflection assistant. Summarise only the provided exhibit check-ins. Do not invent facts. Return valid JSON with content, keywords, and mood."
+          'You write "Your Emotional Museum Journey" for a museum visitor. Use only the provided exhibit responses. Do not invent facts. Interpret the emotional pattern instead of listing actions. Mention specific works, write in warm second person, and end with one guiding sentence for continued looking. Return valid JSON with content, keywords, and mood.'
       },
       {
         role: "user",

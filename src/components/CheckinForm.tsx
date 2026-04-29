@@ -24,7 +24,7 @@ export function CheckinForm({ action, initialEmoji = "\u{1f604}", initialComment
 
   return (
     <form className="checkin-panel" action={action}>
-      <h2>Your reaction</h2>
+      <h2>Your response</h2>
       <div className="emoji-picker" role="radiogroup" aria-label="Choose an Emoji">
         {emojiOptions.map((option) => (
           <label className="emoji-option" key={option.emoji}>
@@ -53,7 +53,7 @@ export function CheckinForm({ action, initialEmoji = "\u{1f604}", initialComment
       <div className="form-actions">
         <button className="primary-button" type="submit">
           <Save size={18} />
-          Save check-in
+          Save response
         </button>
         <Link className="secondary-button" href="/summary">
           <Sparkles size={18} />

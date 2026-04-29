@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { getVisitorSession } from "@/lib/session";
 import { buildAiSummary, sourceHashForCheckins, type CheckinWithExhibit } from "@/lib/summary";
+import { SummaryShareButton } from "@/components/SummaryShareButton";
 
 export const maxDuration = 30;
 
@@ -95,7 +96,7 @@ export default async function SummaryPage() {
           <div>
             <p className="kicker">Visit summary</p>
             <h1>Start with one object</h1>
-            <p className="subtle">Your summary is built from the Emoji and comments saved during this visit.</p>
+            <p className="subtle">Your summary is built from the emoji and comments saved during this visit.</p>
           </div>
           <Link className="primary-button" href="/">
             <ArrowLeft size={18} />
@@ -129,8 +130,8 @@ export default async function SummaryPage() {
       <div className="page-head">
         <div>
           <p className="kicker">Visit summary</p>
-          <h1>Your exhibition reflection</h1>
-          <p className="subtle">Based on {checkins.length} saved reaction{checkins.length > 1 ? "s" : ""}.</p>
+          <h1>Your Emotional Museum Journey</h1>
+          <p className="subtle">{checkins.length} saved response{checkins.length > 1 ? "s" : ""}.</p>
         </div>
         <Link className="secondary-button" href="/">
           <ArrowLeft size={18} />
@@ -154,7 +155,7 @@ export default async function SummaryPage() {
             <div className="mood-bars">{moodRows(checkins)}</div>
           </div>
           <div className="mini-card">
-            <h2>Objects</h2>
+            <h2>The emoji archive</h2>
             <ul className="object-list">
               {checkins.map((item) => (
                 <li key={item.id}>
@@ -163,6 +164,18 @@ export default async function SummaryPage() {
                 </li>
               ))}
             </ul>
+          </div>
+          <div className="mini-card">
+            <h2>Share</h2>
+            <SummaryShareButton
+              content={content}
+              mood={mood}
+              keywords={keywords}
+              objects={checkins.map((item) => ({
+                emoji: item.emoji,
+                title: item.exhibit.title
+              }))}
+            />
           </div>
         </aside>
       </section>

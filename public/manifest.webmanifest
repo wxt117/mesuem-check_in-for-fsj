@@ -1,9 +1,9 @@
 {
-  "name": "Museum Check-in",
-  "short_name": "Check-in",
+  "name": "The Emoji Archive",
+  "short_name": "Emoji Archive",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fbf8f1",
   "theme_color": "#157a7e",
-  "description": "Scan museum QR codes, save exhibit reactions, and generate a personal visit summary."
+  "description": "Scan museum QR codes, save exhibit responses, and generate a personal visit summary."
 }

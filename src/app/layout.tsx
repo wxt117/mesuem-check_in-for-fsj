@@ -4,8 +4,8 @@ import { Home, Sparkles } from "lucide-react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Museum Check-in",
-  description: "Scan exhibit QR codes, save Emoji reactions, and generate a personal museum visit summary.",
+  title: "The Emoji Archive",
+  description: "Scan exhibit QR codes, save Emoji responses, and generate a personal museum visit summary.",
   manifest: "/manifest.webmanifest"
 };
 
@@ -25,9 +25,9 @@ export default function RootLayout({
       <body>
         <div className="app-shell">
           <header className="topbar">
-            <Link className="brand" href="/" aria-label="Museum Check-in home">
+            <Link className="brand" href="/" aria-label="The Emoji Archive home">
               <span className="brand-mark">M</span>
-              <span>Museum Check-in</span>
+              <span>The Emoji Archive</span>
             </Link>
             <nav className="nav-actions" aria-label="Primary navigation">
               <Link className="icon-link" href="/" title="Check-ins" aria-label="Check-ins">

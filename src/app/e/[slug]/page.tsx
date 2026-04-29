@@ -28,6 +28,7 @@ export default async function ExhibitPage({ params, searchParams }: ExhibitPageP
     notFound();
   }
 
+  const byline = [exhibit.artist, exhibit.period].filter(Boolean).join(", ");
   const session = await getVisitorSession();
   const checkin = session
     ? await prisma.checkin.findUnique({
@@ -44,13 +45,9 @@ export default async function ExhibitPage({ params, searchParams }: ExhibitPageP
     <>
       <div className="page-head">
         <div>
-          <p className="kicker">
-            {exhibit.artist ? `${exhibit.artist} - ` : ""}
-            {exhibit.gallery}
-            {exhibit.period ? ` - ${exhibit.period}` : ""}
-          </p>
+          <p className="kicker">{exhibit.gallery}</p>
           <h1>{exhibit.title}</h1>
-          <p className="subtle">{exhibit.description}</p>
+          {byline ? <p className="subtle">{byline}</p> : null}
         </div>
         <Link className="secondary-button" href="/">
           <ArrowLeft size={18} />

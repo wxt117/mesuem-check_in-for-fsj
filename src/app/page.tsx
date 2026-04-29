@@ -37,10 +37,10 @@ export default async function HomePage() {
       <div className="page-head collection-head">
         <div>
           <p className="kicker">Visit trail</p>
-          <h1>Collection check-in</h1>
+          <h1>How Do These Paintings Make You Feel?</h1>
           <p className="subtle">
-            Scan a painting QR code, choose an Emoji, and save a short note. Your reactions build into a personal museum
-            visit summary.
+            As you explore the gallery, scan selected paintings and choose an emoji to capture how each one makes you
+            feel. At the end of the visit, you&apos;ll receive a summary of your responses.
           </p>
         </div>
         <div className="collection-actions">
@@ -54,7 +54,7 @@ export default async function HomePage() {
       <div className="stats-row collection-stats" aria-label="Visit statistics">
         <div className="stat">
           <strong>{checkins.length}</strong>
-          <span>Checked in</span>
+          <span>Responses</span>
         </div>
         <div className="stat">
           <strong>{exhibits.length}</strong>
