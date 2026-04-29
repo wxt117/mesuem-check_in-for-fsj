@@ -131,7 +131,6 @@ export default async function SummaryPage() {
         <div>
           <p className="kicker">Visit summary</p>
           <h1>Your Emotional Museum Journey</h1>
-          <p className="subtle">{checkins.length} saved response{checkins.length > 1 ? "s" : ""}.</p>
         </div>
         <Link className="secondary-button" href="/">
           <ArrowLeft size={18} />
