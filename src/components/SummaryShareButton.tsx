@@ -173,10 +173,6 @@ async function createShareImage({ content, mood, keywords, objects }: SummarySha
     3
   );
 
-  context.font = '22px "Times New Roman", Times, serif';
-  context.fillStyle = "#0f5f63";
-  context.fillText(typeof window === "undefined" ? "the emoji archive" : window.location.origin, 80, 1265);
-
   return canvasToBlob(canvas);
 }
 
