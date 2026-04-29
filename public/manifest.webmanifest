@@ -1,9 +1,16 @@
 {
-  "name": "The Emoji Archive",
-  "short_name": "Emoji Archive",
+  "name": "THE EMOJI ARCHIVE",
+  "short_name": "EMOJI ARCHIVE",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#fbf8f1",
   "theme_color": "#157a7e",
-  "description": "Scan museum QR codes, save exhibit responses, and generate a personal visit summary."
+  "description": "Scan museum QR codes, save exhibit responses, and generate a personal visit summary.",
+  "icons": [
+    {
+      "src": "/emoji-archive-icon.png",
+      "sizes": "1254x1254",
+      "type": "image/png"
+    }
+  ]
 }

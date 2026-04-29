@@ -113,7 +113,7 @@ async function createShareImage({ content, mood, keywords, objects }: SummarySha
 
   context.fillStyle = "#17181c";
   context.font = '700 64px "Times New Roman", Times, serif';
-  context.fillText("The Emoji Archive", 80, 135);
+  context.fillText("THE EMOJI ARCHIVE", 80, 135);
 
   context.font = '700 38px "Times New Roman", Times, serif';
   context.fillStyle = "#157a7e";
@@ -191,7 +191,7 @@ export function SummaryShareButton(props: SummaryShareButtonProps) {
 
       if (navigator.canShare?.({ files: [file] })) {
         await navigator.share({
-          title: "The Emoji Archive",
+          title: "THE EMOJI ARCHIVE",
           text: "Your Emotional Museum Journey",
           files: [file]
         });

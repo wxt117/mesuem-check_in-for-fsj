@@ -72,14 +72,20 @@ a {
 }
 
 .brand-mark {
-  display: grid;
+  display: block;
   width: 36px;
   height: 36px;
-  place-items: center;
   border-radius: 8px;
-  background: var(--ink);
-  color: var(--paper);
+  overflow: hidden;
+  background: var(--panel);
   line-height: 1;
+}
+
+.brand-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .nav-actions {
