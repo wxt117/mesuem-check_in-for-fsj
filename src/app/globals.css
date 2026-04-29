@@ -275,6 +275,10 @@ h3 {
   padding: 18px;
 }
 
+.artwork-stage::before {
+  display: none;
+}
+
 .artifact-stage::before {
   position: absolute;
   inset: 12%;
